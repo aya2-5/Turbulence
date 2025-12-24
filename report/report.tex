@@ -1,0 +1,1205 @@
+\documentclass[11pt,titlepage]{article}
+
+\usepackage[american]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{a4paper}
+\usepackage[parfill]{parskip}
+\usepackage{graphicx}
+\graphicspath{{Figures/}}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{color}
+\usepackage[tt]{titlepic}
+\usepackage{fancyhdr}
+\usepackage{enumerate}
+\usepackage{lastpage}
+\usepackage{float}
+\usepackage{amssymb}
+\usepackage{subcaption}
+\usepackage[export]{adjustbox}
+
+% Custom Defines
+\usepackage[comma,numbers,sort&compress]{natbib}
+\bibliographystyle{plainnat}
+\usepackage[pdfstartview=FitH,
+            breaklinks=true,
+            bookmarksopen=true,
+            bookmarksnumbered=true,
+            colorlinks=true,
+            linkcolor=black,
+            citecolor=black
+            ]{hyperref}
+\newcommand{\rmd}{\textrm{d}}
+\newcommand{\bi}[1]{{\ensuremath{\boldsymbol{#1}}}}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+
+\topmargin=-0.45in
+\oddsidemargin=-0.1in
+\textwidth=6.8in
+\textheight=9.2in
+\headheight=30.9pt
+
+%======================= SET YOUR NAME HERE =======================================
+\def\MyName{Aya Jroundi}
+
+%======================= Titlepage (DO NOT MODIFY) ================================
+\titlepic{\includegraphics[width=5cm]{Figures/EPFL_LOGO.jpg}}
+\title{\textbf{Report}\\Course Project: Turbulence at finite Reynolds number and the skeleton of chaos.}
+
+\author{~\\[3cm]~
+\begin{tabular}{rl}
+Name:&\MyName\\
+Date:&\today\\
+Course:&Turbulence ME-467\\
+Instructor:&Tobias Schneider
+\end{tabular}}
+\date{}
+%==================================================================================
+
+
+
+\begin{document}
+%========================  Header (DO NOT MODIFY) =================================
+\pagestyle{fancy} \pagenumbering{arabic} \setcounter{page}{1}
+\addtolength{\headheight}{\baselineskip}
+\lhead{\textbf{ME-467: Turbulence}\\\MyName}
+\chead{REPORT\\ \textit{Course Project}}
+\rhead{\includegraphics[width=55pt]{Figures/EPFL_LOGO.jpg}}
+\rfoot{\vspace{5pt}{\fontfamily{phv}\fontsize{5}{5}\selectfont ME-467 Project 2025, \MyName{}, \the\day.\the\month.\the\year, \thepage/\pageref{LastPage}}}
+\renewcommand{\headrulewidth}{0.4pt}
+\maketitle
+%==================================================================================
+\section{Part I: Finite Reynolds Number Effects in Turbulence}
+
+
+\subsection{Data Analysis}
+\subsubsection{Velocity Signal in the Spatial Domain}
+\begin{itemize}
+    \item [1.1.1.1] Plot A.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{plotA.png}
+  \caption{%
+    Plot A : Total streamwise velocity \(u_{tot}(x)\) plotted against the spatial coordinate \(x\) for all three datasets. 
+    }
+  \label{fig:plotA}
+\end{figure}
+
+
+    \item [1.1.1.2]
+    As summarized in Table 1, the time-averaged streamwise velocity for each dataset is defined as
+\[
+  U_k = \bigl\langle u_k(t)\bigr\rangle,
+  \qquad k=1,2,3
+\]
+and the measured values are listed in Table 1.  
+
+    \begin{table} [H]
+\centering
+\caption{Table of results 1.}
+    \begin{tabular}{ | c | c | c | c | c |}
+        \hline
+        Param. & Dim. & Data 1 & Data 2 & Data 3 \\
+        \hline
+        $U$ & $m/s$ & 5.2789 & 10.1409 & 13.2441 \\
+        \hline
+        $I$ & - & 0.1338 & 0.1500 & 0.1605 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+    \item [1.1.1.3]
+    The turbulence intensity for each dataset is defined as
+\[
+  I_k = \frac{\sqrt{\bigl\langle (u_k - U_k)^2\bigr\rangle}}{U_k}
+      = \frac{\sqrt{\langle u_k'^{2}\rangle}}{U_k},
+      \qquad k=1,2,3
+\]
+where $u_k'=u_{tot,k}-U_k$.  The measured values are listed in Table 1 (note that I is non dimensional). It shows a clear increase in turbulence intensity from run 1 to run 3, consistent with the growing spread of the velocity fluctuations on Plot A
+
+    \item [1.1.1.4]
+   
+Under Taylor’s frozen‐flow hypothesis, turbulent fluctuations measured in time at a fixed point are mapped into space by assuming the flow structures are “frozen” as they advect past the sensor.  If the time series is \(u_k(t)\) and the mean streamwise velocity is \(U_k\), then
+\[
+  x \;=\; U_k\,t
+  \quad\Longrightarrow\quad
+  u_{\rm tot}(x) = u_k(t)\,.
+\]
+
+In reality the instantaneous velocity is \(U_k + u_k'(t)\), so the true particle displacement is
+\[
+  x_{\rm true}(t)
+  \;=\;\int_0^t \Bigl[\,U_k + u_k'(t')\Bigr]\,\mathrm{d}t'
+  = U_k\,t + \underbrace{\int_0^t u_k'(t')\,\mathrm{d}t'}_{\delta x(t)}
+  = x + \delta x(t).
+\]
+Because \(\langle u_k'\rangle=0\), the mapping is unbiased on average, but individual structures are shifted by \(\delta x(t)\).  The r.m.s.\ position error grows approximately as
+\[
+  \mathrm{rms}[\delta x]
+  = \sqrt{\Bigl\langle\Bigl(\!\int_0^t u_k'(t')\,\mathrm{d}t'\Bigr)^2\Bigr\rangle}
+  \approx \sigma_{u_k}\,t,
+  \quad \sigma_{u_k} = \sqrt{\langle u_k'^2\rangle}.
+\]
+Over a distance \(L = U_k\,t\), the "relative" error is
+\[
+  \frac{\mathrm{rms}[\delta x]}{L}
+  = \frac{\sigma_{u_k}\,t}{U_k\,t}
+  = \frac{\sigma_{u_k}}{U_k}
+  = I_k,
+\]
+where \(I_k\) is the turbulence intensity.  For our datasets we obtained
+\[
+  I_1 = 0.134,\quad I_2 = 0.150,\quad I_3 = 0.161.
+\]
+Thus the spatial mapping is accurate to within roughly 15 percent of the true position.  In absolute terms, over a 10 m record in dataset 3 one expects
+\(\delta x_{\rm rms}\approx I_3\times10\:\mathrm{m}\approx1.6\:\mathrm{m}\).
+
+\medskip
+In summary, Taylor’s hypothesis provides a reasonable first‐order approximation for large‐scale flow features ( \(error \leqslant 0.15\) ), but introduces significant blurring of small‐scale structures.
+
+\end{itemize}
+
+
+\subsubsection{Correlation Length of the Velocity Signal}
+
+\begin{itemize}
+    \item [1.1.2.1]
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.8\textwidth]{plotB.png}
+  \caption{%
+    Normalized autocorrelation functions \(C_k(l)\) of the velocity fluctuations
+    for datasets \(k=1,2,3\).  Each curve is scaled so that \(C_k(0)=1\),
+    and the horizontal dotted line indicates \(C=1/e\).  Vertical dashed lines
+    mark the correlation lengths.%
+  }
+  \label{fig:correlation_length}
+\end{figure}
+
+As summarized in Table 2, the correlation lengths
+\(L_{C,k}\) for datasets \(k=1,2,3\) decrease in order
+\[
+  L_{C,1} < L_{C,2} < L_{C,3},
+\]
+showing that dataset 3 remains correlated over a bigger distance while dataset 1 decorrelates the most rapidly.  This behavior is consistent with the
+increasing turbulence intensity across the three runs.
+
+
+\begin{table}[h]
+\centering
+\caption{Table of results 2.}
+    \begin{tabular}{ | c | c | c | c | c |}
+    \hline
+    Param. & Dim. & Data 1 & Data 2 & Data 3 \\
+    \hline
+    $L_C$  &  m & 0.2807 &  0.3402 & 0.4002 \\
+    \hline
+    $L_\mathrm{int}$ & m & 0.0731 & 0.1969 & 0.2647 \\
+    \hline
+    \end{tabular}
+\end{table}
+
+    \item [1.1.2.2]
+    Correlation length 	\(L_C\) tells you how far you have to move downstream before the velocity at the new point becomes uncorrelated from the original point.
+Correlation time \(\tau_C\) tells you how long you have to wait at the same sensor before the velocity reading becomes essentially uncorrelated from the value that we got before.
+Under Taylor’s frozen-flow hypothesis, a fluid parcel travels at the mean speed \(U\), so
+\[
+  L_C = U\,\tau_C.
+\]
+
+Here:
+- A higher turbulence intensity \(I\) makes fluctuations decorrelate faster, so \(\tau_C\) is shorter for larger \(I\). \\
+- A larger mean speed \(U\) carries fluctuations farther downstream, increasing \(L_C\).
+
+Thus, even if dataset 3 has the smallest \(\tau_C\), its larger \(U_3\) can still produce the largest spatial correlation length \(L_{C,3}\).  If we compute
+
+\[
+  \tau_C = \frac{L_C}{U},
+\]
+
+then we find
+
+\[
+  \tau_{C,1} > \tau_{C,2} > \tau_{C,3},
+\]
+
+which is consistent with our data, stronger turbulence leading to faster temporal decorrelation : as you wait longer, that similarity vanishes and the signal at the later time no longer “remembers” the earlier value.  
+
+
+    
+    \item [1.1.2.3]
+The integral scale is defined by
+\[
+  L_{\mathrm{int},k} \;=\;\int_{0}^{\infty} C_k(l)\,\mathrm{d}l
+  \quad(k=1,2,3).
+\]
+
+\[
+  L_{\mathrm{int},1}=0.073\:\mathrm{m},\quad
+  L_{\mathrm{int},2}=0.197\:\mathrm{m},\quad
+  L_{\mathrm{int},3}=0.265\:\mathrm{m}.
+\]
+These values are summarized in Table 2.
+Both \(L_{\mathrm{int}}\) and \(L_C\) grow from dataset 1 to 3, but
+\(L_{\mathrm{int}}\) is smaller because:
+\begin{itemize}
+  \item We stopped the numerical integral at 5 m, so we miss the tail of \(C(l)\).  By truncating the integral at some finite $l_{max}$	
+ , you miss the “tail” of 
+\(C(l)\) beyond that point. Even if 
+\(C(l)\)is small there, over a long interval it can still contribute to a non negligible amount of area.
+  \item The actual \(C(l)\) decays more slowly than a simple exponential, so
+    more area lies beyond our cutoff. Real turbulence spectra deviate from a single exponential, so the true area under \(C(l)\) can be different from the “
+1/e” width.
+\end{itemize}
+Extending the integration limit or fitting an exponential tail would bring
+\(L_{\mathrm{int}}\) closer to \(L_C\). See Appendix A.
+    
+\end{itemize}
+
+
+\subsubsection{Energy Spectrum of the Flow}
+
+\begin{itemize}
+    \item [1.1.3.1]
+MATLAB’s {\tt fft} returns the sum
+\[
+  F_k \;=\;\sum_{n=1}^N u_n\,e^{-\,i\,k\,x_n}
+\]
+without any factors of the grid spacing \(\Delta x\) or \(2\pi\).  To match our definition
+\[
+  \widetilde E(k)
+  =\frac12\Bigl\lvert\frac{1}{\sqrt{2\pi\,L}}
+    \int_0^L u(x)\,e^{-ikx}\,dx\Bigr\rvert^2,
+\]
+we must:
+
+\begin{enumerate}
+  \item Multiply by \(\Delta x\) to turn the sum into an integral.
+  \item Divide by \(\sqrt{2\pi\,L}\).
+  \item Square the result (bringing a second \(\Delta x\) and a \(2\pi\,L\) into the denominator).
+\end{enumerate}
+
+All at once this is the single prefactor
+\[
+  \text{prefactor}
+  = \frac{\Delta x^2}{2\pi\,L},
+  \quad
+  \Delta x = \frac{U}{f_s},\;
+  L = N\,\Delta x.
+\]
+
+Using our values of \(\Delta x\) and \(L\), the script prints:
+
+\[
+\begin{array}{c|c|c|c}
+\text{Dataset} & \Delta x\;[\mathrm m] & L\;[\mathrm m] & \displaystyle\frac{\Delta x^2}{2\pi\,L} \\ \hline
+1 &7.607\times10^{-4} & 2.492\times10^{3} & 3.694\times10^{-11} \\
+2 & 5.958\times10^{-4} & 1.952\times10^{3} & 2.894\times10^{-11} \\
+3 & 4.799\times10^{-4} & 1.572\times10^{3} & 2.331\times10^{-11} \\
+\end{array}
+\]
+
+These three numbers were then entered into the results Table 3.
+
+ \begin{table}[H]
+\centering
+\caption{Table of results 3.}
+    \begin{tabular}{ | c | c | c | c | c |}
+    \hline
+    Param. & Dim. & Data 1 & Data 2 & Data 3 \\
+    \hline
+    fft normalization & $m$ & $3.694\times10^{-11}$ & $2.894\times10^{-11}$ & $2.331\times10^{-11}$ \\
+    \hline
+    $L_{\mathrm{int},E}$ & $m$ & 0.5036&0.7348 &0.8756 \\
+    \hline
+    $\eta_E$ & $m$ &0.001521 & 0.001192&0.000960 \\
+    \hline
+    \end{tabular}
+\end{table}
+
+    \item [1.1.3.2]
+We compute the one‐sided spectrum \(E(k)\) for \(k>0\) in three simple steps:
+
+\begin{enumerate}
+  \item Truncate to non‐negative wavenumbers. Keep only the first \(M = N/2 + 1\) FFT bins, which correspond to \(k \ge 0\).
+  \item Fold negative‐\(k\) energy onto positive side. 
+  Since \(\widetilde E(-k)=\widetilde E(+k)\), double bins 2 through \(M-1\) so that
+  \[
+    E(k_m) = \widetilde E(k_m) + \widetilde E(-k_m)
+           = 2\,\widetilde E(k_m), \quad 1 \le m \le M-2.
+  \]
+
+  \item Smooth the spectrum.
+\end{enumerate}
+
+
+All three datasets are then plotted together on log–log axes (Plot C).  The curves show:\\
+- A broad peak at low $k$ (large eddies), \\
+- A straight mid-section that follows the $k^{-5/3}$ line (inertial subrange),\\
+- A steep fall-off at high $k$ (dissipation range).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{pltC.png}
+  \caption{Plot C : One‐sided energy spectra for Datasets 1–3, smoothed.  The dashed line shows the \(k^{-5/3}\) Kolmogorov scaling for comparison.}
+  \label{fig:plotC}
+\end{figure}
+
+    \item [1.1.3.3]
+To confirm that our spectral normalization is correct, we compare the time‐domain kinetic energy
+\[
+  \frac12\langle u^2\rangle = \frac12\,\mathrm{mean}\bigl(u_i^2\bigr)
+\]
+with the spectral‐domain integral
+\[
+  \int_0^\infty E(k)\,dk \;\approx\;\mathrm{trapz}\bigl(k,E(k)\bigr).
+\]
+Results :\\
+ Spectrum 1 error: $9.991\times 10^-10\,\%$\\
+ Spectrum 2 error: $1.439 \times 10^-12\,\%$\\
+ Spectrum 3 error: $2.288\times 10^-11 \,\%$ \\
+ The parseval theorem gives an almost zero error for the unsmoothed spectrum.
+Such small errors show that our normalization prefactor is implemented correctly.
+    
+    \item [1.1.3.4]
+We overlay Kolmogorov’s inertial‐range prediction
+\[
+  E(k)\propto k^{-5/3}
+\]
+directly on our spectra in Plot C. Visually one
+sees that all three smoothed spectra run roughly parallel to this line. 
+    
+    \item [1.1.3.5]
+    We obtain the integral length scale $L_{\mathrm{int},E}$ directly from the peak of each smoothed spectrum $E(k)$, since the largest energy eddies dominate at that wavenumber. So :
+\[
+L_{\mathrm{int},E} \;=\;\frac{2\pi}{k_{\max}}.
+\]
+The Kolmogorov length scale $\eta_E$ is estimated by locating the wavenumber $k_\eta$ at which $E(k)$ has fallen to $10\,\%$ of its peak value and converting back to length via
+\[
+\eta_E \;=\;\frac{2\pi}{k_\eta}.
+\]
+Vertical dashed lines at $k=2\pi/L_{\mathrm{int},E}$ and $k=2\pi/\eta_E$ are drawn on Plot C to show these scales for all three datasets.  The resulting values are entered in the results Table 3. These estimates satisfy the expected ordering $\eta_E \ll L_{\mathrm{int},E} \ll L_{\rm domain}$.  
+\end{itemize}
+
+
+\subsubsection{The Dissipation Rate and Different Reynolds Numbers}
+
+\begin{itemize}
+    \item [1.1.4.1]
+
+Using the Taylor microscale formulation,
+\[
+\epsilon \;=\;\frac{1}{2}\,\frac{\bigl\langle u^2\bigr\rangle^{3/2}}{L_C},
+\]
+and inserting the values of \(\langle u^2\rangle\) and the correlation length \(L_C\), we obtain $\epsilon_1$, $\epsilon_2$ and $\epsilon_3$.
+
+    
+    \begin{table}[H]
+\centering
+\caption{Table of results 4.}
+    \begin{tabular}{ | c | c | c | c | c |}
+        \hline
+        Param. & Dim. & Data 1 & Data 2 & Data 3 \\
+        \hline
+        $\epsilon$ & $\mathrm{m^2/s^3}$& 0.6270& 5.173 & 12.01 \\
+        \hline
+        $Re_\lambda$ & - & 629.7 &1017.3 &  1304.5\\
+        \hline
+        $Re$ & - & 13215.8& 34499.6& 56722.4\\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+    \item [1.1.4.2]
+    Using 
+\[
+\lambda = \sqrt{\frac{15\,\nu\,\langle u^2\rangle}{\epsilon}},
+\quad
+\mathrm{Re}_\lambda = \frac{u'\,\lambda}{\nu},
+\]
+with \(\nu = 1.5\times10^{-5}\,\mathrm{m}^2/\mathrm{s}\), we obtain
+\[
+\mathrm{Re}_{\lambda,1}\approx627.0,\quad
+\mathrm{Re}_{\lambda,2}\approx1017.3,\quad
+\mathrm{Re}_{\lambda,3}\approx 1304.5
+\]as filled in the result Table 4.
+
+    \item [1.1.4.3]
+The outer‐scale Reynolds number is defined by
+\[
+  \mathrm{Re}
+  = \frac{u'\,L_{\mathrm{int}}}{\nu},
+  \quad
+  u'=\sqrt{\langle u^2\rangle},\;
+  L_{\mathrm{int}}=L_C.
+\]
+Using our computed values of the RMS fluctuation \(u'\), the integral scale \(L_C\),
+and the kinematic viscosity \(\nu=1.5\times10^{-5}\,\mathrm{m}^2/\mathrm{s}\), we obtain
+the values entered in Table 4. \noindent Because
+\[
+\frac{\mathrm{Re}_{\mathrm{outer}}}{\mathrm{Re}_{\lambda}}
+=\frac{u'\,L_C/\nu}{u'\,\lambda/\nu}
+=\frac{L_C}{\lambda},
+\]
+and \(L_C\gg\lambda\), it follows naturally that
+\(\mathrm{Re}_{\mathrm{outer}}\gg\mathrm{Re}_{\lambda}\).
+
+\end{itemize}
+
+
+
+
+\subsubsection{Velocity Increments}
+\begin{itemize}
+    \item [1.1.5.1] 
+The function {\tt increment(u,l,f,U)} calculates the velocity difference over a fixed distance \(\ell\) by converting \(\ell\) into the equivalent number of data points (using \(\Delta x = U/f\)), and then for each \(i\) it calculates
+\[
+\delta u_i = u_{i+N_\text{lag}} - u_i,
+\]
+where \(N_\text{lag}=\mathrm{round}(\ell/\Delta x)\).  It returns the list of positions \(x_i\) and the corresponding increments \(\delta u_i\).  
+    
+    \item [1.1.5.2] 
+For each separation length 
+\(\ell \in \{1\rm\,mm,\;1\rm\,cm,\;10\rm\,cm,\;10\rm\,m\}\) 
+we calculated the longitudinal increment 
+\(\delta u_\parallel(x,\ell)=u(x+\ell)-u(x)\) 
+using our {\tt increment} function. To keep each subplot focused, the horizontal axis spans the first \(50\,\ell\) of data, and the vertical axis is set to \(\pm3\sigma_{\delta u}\), where \(\sigma_{\delta u}\) is the standard deviation of the increments.  This arrangement makes it easy to compare how the signal’s amplitude and structure change with scale.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{plotD.jpg}
+  \caption{Plot D : Velocity increments \(\delta u_\parallel(x,\ell)\) for the four separations \(\ell\) and three datasets.  }
+  \label{fig:plotD}
+\end{figure}
+
+
+    \item [1.1.5.3]
+We found earlier in part 1.3 that the smallest eddies have size around \(10^{-3}\) m (the Kolmogorov scale) and the largest eddies around \(10\) m (the integral scale).  Our four test separations:
+
+- 1 mm (\(10^{-3}\) m) sits right at the smallest, viscous‐dissipation eddies.\\
+- 1 cm (\(10^{-2}\) m) is just above that, at the start of the inertial (energy‐cascade) range.\\
+- 10 cm (\(10^{-1}\) m) lies in the middle of the inertial range, where energy follows the \(k^{-5/3}\) law.\\
+- 10 m reaches the largest, energy‐containing eddies around the integral scale.\\
+So by going from 1 mm up to 10 m, our increments sweep from the tiniest dissipative scales through the inertial range and up to the biggest energy containing motions.  
+ 
+    \item [1.1.5.4] 
+The four panels of Plot D show that as \(\ell\) increases, the signal evolves from smooth, low amplitude wiggles to large, random looking fluctuations:
+
+\begin{itemize}
+  \item \(\ell=1\rm\,mm\):  Here \(u(x+\ell)\approx u(x)\), so \(\delta u\) is very small and slowly varying—points remain highly correlated.  
+  \item \(\ell=1\rm\,cm\) and \(\ell=10\rm\,cm\):  Correlation weakens in the inertial range, so \(\delta u\) shows larger swings and a more jagged appearance.  
+  \item \(\ell=10\rm\,m\):  Beyond the integral scale correlation has essentially vanished, so \(\delta u\) behaves like independent random values with maximal variance.  
+\end{itemize}
+
+Mathematically, the variance of the increments is  
+\[
+\bigl\langle(\delta u)^2\bigr\rangle
+=2\bigl\langle u^2\bigr\rangle\bigl[1-C(\ell)\bigr],
+\]
+so as the autocorrelation \(C(\ell)\) falls from 1 toward 0, the increment variance—and hence its visible amplitude—increases.  Thus the changing “roughness” and amplitude of \(\delta u\) across \(\ell\) directly show the decay of the autocorrelation curve from Section 1.2.  
+
+\end{itemize}
+
+
+\subsubsection{Statistics of Velocity Increments}
+   
+\begin{itemize}
+    \item [1.1.6.1]
+We now need to complete the function \begin{verbatim}
+/functions/fit_gaussian.m
+\end{verbatim}
+For this, we compute the mean and variance of the empirical PDF \(p(u)\) as
+\[
+  \mu = \int u\,p(u)\,\mathrm{d}u,
+  \qquad
+  \sigma^2 = \int (u-\mu)^2\,p(u)\,\mathrm{d}u,
+\]
+and define the Gaussian fit
+\[
+  G(u)
+  = \frac{1}{\sigma\sqrt{2\pi}}
+    \exp\!\Bigl[-\tfrac{(u-\mu)^2}{2\sigma^2}\Bigr].
+\]
+
+    \item [1.1.6.2]
+   \begin{figure}[ht]
+  \centering
+  \begin{subfigure}[t]{0.46\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{Dataset1_semilogy.jpg}
+    \caption{Dataset 1, semilog–$y$}
+    \label{fig:pdf1}
+  \end{subfigure}%
+  \hspace{0.03\textwidth}%
+    \begin{subfigure}[t]{0.46\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{Dataset1_linear.jpg}    \caption{Dataset 1, linear}
+    \label{fig:pdf3}
+  \end{subfigure}
+    \hspace{0.03\textwidth}%
+  \begin{subfigure}[t]{0.46\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{Dataset2_semilogy.jpg}
+    \caption{Dataset 2, semilog–$y$}
+    \label{fig:pdf2}
+  \end{subfigure}%
+  \hspace{0.03\textwidth}%
+  \begin{subfigure}[t]{0.46\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{Dataset3_semilogy.jpg}
+    \caption{Dataset 3, semilog–$y$}
+    \label{fig:pdf3}
+  \end{subfigure}
+  \caption{Plot E : PDFs of $\delta u_{||}$ at $\ell=\{1\rm\,mm,1\rm\,cm,10\rm\,cm,10\rm\,m\}$ for three Reynolds‐number datasets.  Empirical (blue) vs.\ Gaussian fit (orange).}
+  \label{fig:pdf_semilogy}
+\end{figure}
+
+\noindent
+Figure~\ref{fig:pdf_semilogy} (Plot E) shows the PDFs of $\delta u_{||}$ for four separation distances on a semilog–$y$ axis for three datasets of increasing Reynolds number.  The logarithmic vertical scale is essential to see the exponential “heavy tails” that arise at small scales $\ell$, which are invisible on a linear‐$y$ plot.  In each panel the fitted Gaussian (orange) matches the core of the distribution but does not predict the probability of large increments: this non-Gaussian intermittency is strongest at the smallest $\ell$ (sharpest tails) and gradually weakens as $\ell$ increases, where the PDF approaches the Gaussian shape expected from K41 self-similarity.  
+
+By contrast, a linear‐$y$ plot (shown only for the dataset 1 in subfigure 5(b)) compresses the tails into the baseline and highlights only the central peak. Thus we adopt the semilog–$y$ representation to visualize better and quantify the scale-dependent intermittency of the velocity increments.  
+
+    \item [1.1.6.3]
+Figure~\ref{fig:pdf_semilogy} clearly shows that the shape of the PDF of $\delta u_{||}$ varies strongly with the separation distance~$\ell$.  At the smallest scale ($\ell=1\,$mm), the distribution is highly non‐Gaussian: its core is sharper than a Gaussian and the tails are much heavier, indicating a high probability of large velocity jumps (intermittency).  As $\ell$ increases to 1 cm and 10 cm, the tails thin out and the central peak broadens, bringing the PDF closer to the fitted Gaussian.  By the largest separation ($\ell=10\,$m), the empirical PDF almost coincides with the Gaussian curve, consistent with the central‐limit type behavior expected when averaging fluctuations over long distances.  This progression, from strong heavy‐tail intermittency at small $\ell$ to near‐Gaussian statistics at large $\ell$, shows the breakdown of self‐similarity at inertial scales and its gradual recovery at integral scales.
+
+    
+    \item [1.1.6.4]
+K41 predicts that, once you normalize by the appropriate scale (e.g.\ divide $\delta u_{\ell}$ by its root‐mean‐square), the PDFs at different $\ell$ should all collapse onto the same Gaussian curve.  In our data this is clearly not the case: at the smallest separations ($\ell=1\,$mm) the PDFs are far more peaked and have much heavier tails than a Gaussian, while at the largest separations ($\ell=10\,$m) they come back toward the normal bell shape.  In other words, the shape of the PDF depends on $\ell$, directly contradicting strict self‐similarity in the inertial range.  
+
+We also see that higher Reynolds numbers amplify the non‐Gaussian behavior at small scales.  In Dataset 3 (the highest Re) the PDF at $\ell=1\,$mm is the most sharply peaked and has the heaviest tails. Dataset 1 (the lowest Re) shows only small deviations from a Gaussian.  Once we move to the largest separation ($\ell=10\,$m), all three datasets’ PDFs collapse back onto the Gaussian curve that K41 predicts at integral scales.  In other words, the amount by which the PDF shape depends on both scale and Re tells us that we need to add some non Gaussian corrections to K41’s assumption of perfect self‐similarity.   
+
+\end{itemize}
+
+\subsubsection{Structure Functions and Energy Dissipation}
+
+\begin{itemize}
+    \item [1.1.7.1]  
+We wrote a MATLAB function, \texttt{structure\_function.m}, to compute the $n$-th order structure function
+\[
+S_n(\ell) \;=\;\bigl\langle \bigl[u(x+\ell)-u(x)\bigr]^n\bigr\rangle
+\]
+for a list of spatial separations~$\ell$.  In plain terms, for each $\ell$ the code:
+
+\begin{enumerate}
+  \item Uses Taylor’s hypothesis, $\tau = \ell / U$, to turn the spatial lag into a time lag.
+  \item Converts that time lag into a sample offset $d = \mathrm{round}(\tau f)$.
+  \item Forms all velocity increments $\delta u = u(t+d) - u(t)$.
+  \item Averages $(\delta u)^n$ over the valid data points.
+\end{enumerate}
+
+The result is a vector $S_n(\ell)$ (same length as~$\ell$) that you can plot directly on a log–log scale to extract scaling exponents. Invalid offsets (too small or beyond the signal length) are set to NaN. 
+    \item [1.1.7.2] 
+    \begin{figure}[H]
+  \centering
+  %— Plot F: S₂(ℓ) —
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{plotF.png}
+    \caption{Plot F : Second-order structure function $S_{2}(\ell)$ vs.\ separation $\ell$, on log–log axes, for the three datasets.}
+    \label{fig:S2_vs_l}
+  \end{subfigure}
+  \hfill
+  %— Plot G: S₃(ℓ) —
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{plotG.png} 
+    \caption{Plot G : Third-order structure function $S_{3}(\ell)$ vs.\ separation $\ell$, on log–log axes, for the three datasets.}
+    \label{fig:S3_vs_l}
+  \end{subfigure}
+  \caption{Log–log plots of (a) the second-order and (b) the third-order structure functions versus separation distance $\ell$.  In the inertial range the roughly linear regimes yield the scaling exponents.}
+  \label{fig:structure_functions}
+\end{figure}
+
+    \item [1.1.7.3]  
+In Kolmogorov’s (K41) inertial‐range theory the one‐dimensional energy spectrum scales as
+\[
+E(k)\;\propto\;\varepsilon^{2/3}\,k^{-5/3}\,,
+\]
+where \(\varepsilon\) is the mean energy dissipation rate.  The second–order structure function
+\[
+S_{2}(\ell)\;=\;\bigl\langle [\delta u(\ell)]^{2}\bigr\rangle 
+\;=\;\int_{0}^{\infty}E(k)\,\bigl[1-\cos(k\ell)\bigr]\,\mathrm{d}k
+\]
+then follows a power‐law
+\[
+S_{2}(\ell)\;\sim\;(\varepsilon\,\ell)^{2/3}\quad\Longrightarrow\quad
+S_{2}(\ell)\propto \ell^{2/3}
+\]
+Thus on a log–log plot of \(S_{2}\) vs.\ \(\ell\) one expects a slope of \(2/3\).  
+
+    \item [1.1.7.4] 
+Kolmogorov’s exact four-fifth law in the inertial range predicts
+\[
+S_{3}(\ell)\;=\;\bigl\langle[\delta u(\ell)]^{3}\bigr\rangle
+\;=\;-\,\frac{4}{5}\,\varepsilon\,\ell
+\;\;\Longrightarrow\;\;
+S_{3}(\ell)\propto \ell^{1}
+\]
+
+A linear fit, that I added at the end of the code for this part, in the inertial‐range window $\lambda\ll\ell\ll L_C$ gives the exponents   
+\[
+\zeta_{\mathrm{data}}^{(1)}\approx1.049,\quad
+\zeta_{\mathrm{data}}^{(2)}\approx0.970,\quad
+\zeta_{\mathrm{data}}^{(3)}\approx0.918,
+\]
+all within about \(\pm3\%\) of the predicted value \(\zeta=1\).  At \(\ell\lesssim\lambda\) the curves fall below the unit slope (dissipation‐range effects) and for \(\ell\gtrsim L_C\) they level off (energy‐containing scales).  Overall, the data support the four-fifth law well in the inertial range.
+    
+    \item [1.1.7.5] 
+In our updated script we load for each dataset the Taylor microscale~$\lambda$ and the integral scale~$L_C$ and plot vertical dashed lines at
+\[
+\ell=\lambda
+\quad\text{and}\quad
+\ell=L_C
+\]
+on both $S_2(\ell)$ and $S_3(\ell)$ diagrams in Figure 6.  These two scales delimit the inertial range
+\[
+\lambda \;\ll\;\ell\;\ll\;L_C
+\]
+within which Kolmogorov’s 1941 predictions
+\[
+S_2(\ell)\propto \ell^{2/3},
+\quad
+S_3(\ell)\propto \ell^1
+\]
+are expected to hold.
+
+\begin{itemize}
+  \item For $\ell\lesssim\lambda$, viscous dissipation cause small‐scale fluctuations, causing both $S_2$ and $S_3$ to deviate below their ideal power laws.
+  \item For $\ell\gtrsim L_C$, the flow is dominated by large‐scale energy‐containing eddies, leading to a flattening of the structure functions.
+
+\end{itemize}
+
+    \item [1.1.7.6] 
+ Kolmogorov’s theory predicts straight‐line scaling
+\[
+S_{2}(\ell)\propto\ell^{2/3},\quad
+S_{3}(\ell)\propto\ell^{1}
+\]
+all the way down toward \(\ell\to0\).  However, our log–log plots (Figs.~\ref{fig:S2_vs_l} and \ref{fig:S3_vs_l}) show:
+
+\begin{itemize}
+  \item Dataset 1 (lowest Re):  
+    Both \(S_{2}\) and \(S_{3}\) bend downward immediately at \(\ell\lesssim\lambda\); there is no clear straight segment.
+  \item Dataset 2 (medium Re) :  
+    A small window of near‐linear behavior appears just above \(\lambda\), but the curves still curve away at the smallest scales.
+  \item Dataset 3 (highest Re) :  
+    The best quasi‐linear region occurs for \(\ell\approx10^{-2}\)–\(10^{-1}\)\,m, yet even here slight curvature remains.
+\end{itemize}
+
+Trend with Reynolds number:
+As Re increases (i.e.\ \(\lambda\) decreases and \(L_C/\lambda\) grows), the inertial‐range window broadens, so the data align more with the K41 slopes.  But at finite Re the viscous cutoff still prevents a perfect straight‐line all the way to \(\ell\to0\).
+    
+    \item [1.1.7.7] 
+In the inertial range one has the exact four‐fifth law
+\[
+S_{3}(\ell)\approx \frac{4}{5}\,\varepsilon\,\ell
+\;\;\Longrightarrow\;\;
+\varepsilon_{S_{3}}(\ell)
+=\frac{5}{4}\,\frac{S_{3}(\ell)}{\ell}
+\]
+and, 
+\[
+S_{2}(\ell)\approx C_{2}\,\bigl(\varepsilon\,\ell\bigr)^{2/3},
+\;C_{2}\approx2.1
+\;\;\Longrightarrow\;\;
+\varepsilon_{S_{2}}(\ell)
+=\frac{\bigl[S_{2}(\ell)/C_{2}\bigr]^{3/2}}{\ell}\,.
+\]
+
+
+The new dissipation-rate estimates agree very well with those from Part 1.4 for the integral‐scale and second‐order structure‐function methods (differences within 5\%), whereas the third‐order (S3) estimate is still a bit larger compared to the earlier results.
+ 
+
+\end{itemize}
+
+\begin{table}[h!]
+\centering
+\caption{Table of results 5.}
+    \begin{tabular}{ | c | c | c | c | c |}
+        \hline
+         Param. & Dim. & Data 1 & Data 2 & Data 3 \\
+        \hline
+        $\epsilon$ from integral scale & $\mathrm{m^2/s^3}$& 0.6270& 5.173 & 12.01 \\
+        \hline
+        $\epsilon$ from S2& \(\mathrm{m}^2/\mathrm{s}^3\) &0.6291 &5.354 &  13.45 \\
+        \hline
+        $\epsilon$ from S3& \(\mathrm{m}^2/\mathrm{s}^3\) &0.7098 &2.663  &21.16    \\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+\subsubsection{Flatness of Velocity Increments}
+    
+\begin{itemize}
+    \item [1.1.8.1] 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\linewidth]{plotH.png}
+  \caption{%
+    Plot H : Flatness versus separation scale \(l\) for the three datasets.
+    Vertical dashed lines mark each run’s Taylor microscale \(\lambda\) and integral scale \(L_C\),
+    while the horizontal dashed line at \(F=3\) indicates the Gaussian limit at large \(l\).%
+  }
+  \label{fig:flatness_vs_l}
+\end{figure}
+
+We plot the flatness of the longitudinal velocity increment signal $\delta u_{\parallel}(x,l)$ that is defined as
+\[
+  F(l) \;\equiv\;
+  \frac{\bigl\langle \delta u_{\parallel}^{4}(x,l)\bigr\rangle}
+       {\bigl\langle \delta u_{\parallel}^{2}(x,l)\bigr\rangle^{2}}
+  \,.
+\]
+    \item [1.1.8.2] 
+The flatness \(F(l)\) is just a measure of how often really big velocity jumps happen compared to typical ones.  In plain terms:
+
+\begin{itemize}
+  \item Small \(l\), (\(l \ll \lambda\)): the PDF has very fat tails (lots of extreme jumps), so \(F(l)\) is large (well above 3).
+  \item Inertial range,  (\(\lambda \lesssim l \lesssim L_C\)): the tails get thinner as \(l\) grows, so \(F(l)\) drops down into the 4–6 range.
+  \item Large \(l\), (\(l \gg L_C\)): the PDF looks nearly Gaussian (no fat tails), and \(F(l)\) approaches 3.
+\end{itemize}
+
+
+    \item [1.1.8.3] 
+When your separation \(l\) is much bigger than the biggest eddies (the integral scale \(L_C\)), each velocity difference \(\delta u(x,l)\) sees dozens or hundreds of independent swirls.
+Why does that matter? If we add up a lot of independent random pieces, the result always looks like a bell-shaped (Gaussian) curve.
+What does that imply for flatness? A perfect bell curve has flatness \(F=3\). So once \(l\) is large enough, \(F(l)\) can’t keep changing, and it settles at \(3\).
+On our plot, that’s exactly why all three curves end up running along the horizontal dashed line at \(F=3\).
+
+    \item [1.1.8.4] 
+K41's self-similarity assumption, says that in the inertial range of turbulence, velocity fluctuations are self-similar. This means that statistical properties, such as the probability distribution of velocity increments, remain unchanged when scaled up or down within this range.
+In our data, however, \(F(l)\) drops as \(l\) goes from \(\lambda\) to \(L_C\).  Since the flatness clearly changes with \(l\), the PDFs are not exactly self‐similar, and H2 does not hold perfectly in our measurements.
+
+\end{itemize}
+
+\subsection{Interpretation and Discussion } 
+%==================================================================================
+Kolmogorov’s 1941 theory (K41) gives clear predictions in the infinite–Re limit:
+\[
+E(k)\propto k^{-5/3},\quad
+S_2(\ell)\propto \ell^{2/3},\quad
+\text{and flatness }F(\ell)\text{ constant in the inertial range.}
+\]
+Our finite–Re data agree with the main ideas but reveals important deviations. Now, we summarize our findings:
+
+\begin{itemize}
+  \item \textbf{Inertial‐Range Power Laws.}  
+    In Plot C the energy spectra shows a slope close to \(-5/3\) over roughly 3 decades. 
+    Likewise, in Plot D the second‐order structure functions scale like \(\ell^{2/3}\) over the same ranges.  
+    This confirms the picture: energy injected at large scales travels down to smaller scales without loss until viscosity acts.  
+    The inertial range becomes bigger as \(Re\) increases, just as expected.
+
+  \item \textbf{PDF Shape and Intermittency.}  
+    Plot G shows the probability distributions of \(\delta u(\ell)\) for various \(\ell\).  
+    Instead of collapsing onto a single curve, the PDFs keep heavy tails throughout the inertial range (\(\lambda\lesssim\ell\lesssim L_C\)), indicating some fluctuations (“bursts”).  
+    This is because of intermittency, which K41 neglects.
+
+  \item \textbf{Flatness Behavior.}  
+    Plot H quantifies this with the flatness \(F(\ell)=\langle\delta u^4\rangle/\langle\delta u^2\rangle^2\).  
+    We observe:
+    \begin{itemize}
+      \item Very large \(F\sim8\!-\!12\) at \(\ell\ll\lambda\) (dissipation range);
+      \item A steady drop to \(F\sim4\!-\!6\) across the inertial range;
+      \item A constant at \(F=3\) for \(\ell\gg L_C\), marking Gaussian.
+    \end{itemize}
+    The fall of \(F(\ell)\) through the inertial range directly shows that PDFs change shape with scale, which is violating K41’s self‐similarity (H2).  
+    The final plateau at \(F=3\) simply reflects the central‐limit effect when many eddies are averaged.
+
+  \item \textbf{Dissipation‐Range and Finite–\(Re\) Effects.}  
+    At the smallest separations (near the Kolmogorov scale \(\eta\)) we see the \(k^{-5/3}\) and \(\ell^{2/3}\) laws.  
+    Viscous damping smooths small scale fluctuations, and our finite data length under‐samples extreme events.  
+    These cause the spectrum to steepen and the structure functions to deviate at high \(k\) and small \(\ell\).
+
+  \item \textbf{Overall Assessment.}  
+    \begin{itemize}
+      \item K41 accurately predicts the existence of an inertial range, its scaling exponents, and the expansion of that range with \(Re\).
+      \item However, real flows at finite \(Re\) exhibit clear intermittency: the shape of the increment PDF—and hence flatness—varies with scale.
+      \item Strict self‐similarity (H2) is not observed, as \(F(\ell)\) is not constant.
+    \end{itemize}
+\end{itemize}
+
+In conclusion, while K41 captures the qualitative cascade and inertial‐range exponents, our finite‐Re measurements highlight the need for refined models that takes account for intermittency and dissipation‐range effects.  
+
+
+
+
+
+
+
+
+
+\newpage
+\section{Part II: Chaos, its skeleton, and quantitative characterization}
+\subsection{Chaotic behavior of the KSE}
+\subsubsection{Qualitative investigation}
+\noindent\underline{\textbf{Discussion---The onset of qualitative divergence}}:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{plotA_part2.png}
+  \caption{Plot A : Space–time contours of the reference solution \(u_{1}(x,t)\) (top), the perturbed solution \(u_{2}(x,t)\) (middle), and their absolute difference \(\lvert u_{1}-u_{2}\rvert\) (bottom) over the interval \(t\in[0,250]\).}
+  \label{fig:plotA}
+\end{figure}
+
+\paragraph{Qualitative divergence :}
+We initialized both trajectories on the chaotic attractor, advanced them for \(T_{\mathrm{trans}}=1000\) time units, and then applied a small random perturbation of relative amplitude \(\epsilon=10^{-2}\) to one of the states.  As illustrated in Plot A, the two solutions remain very similar (but they are not!) (\(\lvert u_{1}-u_{2}\rvert\approx0\)) for approximately \(120\)–\(130\) time units.  Beyond this “predictability horizon,” some fluctuations in the difference field emerge.
+ 
+
+
+\subsubsection{Quantitative characterization}
+To approximate the Jacobian
+\[
+J^{t}_{\mathbf v(0)} \;=\;\frac{\partial \mathbf v(t)}{\partial \mathbf v(0)}\in\mathbb{R}^{n\times n},
+\]
+we employ central finite differences.  Denoting by \(\mathbf e_j\) the \(j\)-th basis vector, each column of \(J\) is computed as
+\[
+J_{:,j}
+\;=\;
+\frac{\mathbf v\bigl(t;\,\mathbf v(0)+\varepsilon\,\mathbf e_j\bigr)
+      \;-\;
+      \mathbf v\bigl(t;\,\mathbf v(0)-\varepsilon\,\mathbf e_j\bigr)}
+     {2\,\varepsilon}\,,
+\]
+where \(\varepsilon\) is the finite‐difference increment.  
+
+\begin{table}[h]
+\centering
+\caption{The ten leading Lyapunov exponents.}
+    \begin{tabular}{ | c | c |}
+        \hline
+        $\chi_1$ & 0.0512 \\
+        \hline
+        $\chi_2$ & 0.0000 \\
+        \hline
+        $\chi_3$ &  -0.1785\\
+        \hline
+        $\chi_4$ &    -0.2848\\
+        \hline
+        $\chi_5$ &    -0.3275\\
+        \hline
+        $\chi_6$ &   -0.3922 \\
+        \hline
+        $\chi_7$ &    -0.5896\\
+        \hline
+        $\chi_8$ &    -0.7240\\
+        \hline
+        $\chi_9$ &   -2.2766 \\
+        \hline
+        $\chi_{10}$ &    -4.2529 \\
+        \hline
+    \end{tabular} 
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\linewidth]{report/Figures/plotB_part2.png}
+  \caption{Plot B : Convergence of the ten leading Lyapunov exponents \(\chi_i(t)\) versus time. }
+  \label{fig:plotB}
+\end{figure}
+
+\noindent\underline{\textbf{Discussion 1---The number of zero Lyapunov exponents}}:
+
+(From the lectures) In a system with continuous time–translation symmetry, one expects a single zero Lyapunov exponent reflecting the neutral direction along the trajectory.  
+
+In our numerical spectrum
+\[
+\{\chi_i\}_{i=1}^{10}=\{0.0512,\;0.0000,\;-0.1785,\;\dots\},
+\]
+the second exponent indeed is zero, while the next exponent is well separated by 
+\(\lvert\chi_3-\chi_2\rvert\approx0.1785\).  This gap far exceeds a certain tolerance (of order \(10^{-3}\)), allowing us to identify the single zero exponent.
+
+\noindent\underline{\textbf{Discussion 2---The convergence of Lyapunov exponents}}:
+To assess whether 10{,}000 time units suffices for convergence, we examine the time‐series \(\chi_i(t) = S(t)/t\) plotted in Fig.~\ref{fig:plotB}.  The leading exponent \(\chi_1(t)\) approaches its long‐term value by roughly \(t\approx3{,}000\), with fluctuations thereafter below \(10^{-4}\).  Similarly, the neutral exponent \(\chi_2(t)\) stabilizes at zero within \(10^{-5}\) by \(t\approx3{,}500\).  All higher exponents \(\chi_{3\ldots10}(t)\) also plateau well before \(t=10{,}000\), with their residual drift smaller than our convergence tolerance (\(\sim10^{-3}\)).  
+
+Thus 10{,}000 time units is more than sufficient: beyond \(t\approx5{,}000\) every exponent remains within 0.1 % of its asymptotic value, confirming practical convergence for all ten computed Lyapunov exponents. 
+
+
+\noindent\underline{\textbf{Discussion 3---The Lyapunov time}}:
+
+The leading Lyapunov exponent is
+\[
+\chi_1 \approx 0.0512,
+\qquad
+\Longrightarrow
+\quad
+t^*_L = \frac{1}{\chi_1} \approx 19.5.
+\]
+This \(t^*_L\) is the \emph{e-folding time} for infinitesimal perturbations.  In Sec.~3.1 (Fig.~8) we observed that a finite kick of relative amplitude \(\varepsilon=10^{-2}\) remains imperceptible until about
+\[
+t_{\rm corr}\approx125
+\]
+time units, where \(\lvert u_1 - u_2\rvert\) first becomes \(\mathcal O(1)\).  
+
+Because finite errors must grow by a factor \(\sim1/\varepsilon\) to decorrelate fully, one expects
+\[
+t_{\rm pred}\;\approx\;\frac{1}{\chi_1}\ln\!\bigl(1/\varepsilon\bigr)
+\;=\;
+t^*_L\;\ln(100)
+\;\approx\;
+19.5\times4.6
+\;\approx\;
+90,
+\]
+i.e.\ several Lyapunov times.  Our measured \(t_{\rm corr}\approx125\) corresponds to \(\approx6.4\,t^*_L\), which we can justify with nonlinear saturation and the threshold for “order one” differences.  Thus the two time scales \(t^*_L\) for linear growth and \(t_{\rm corr}\) for finite-amplitude loss of memory are consistent.  
+
+\subsection{Invariant sets embedded in the chaotic attractor}
+\subsubsection{Equilibrium solutions}
+\begin{itemize}
+
+\item We selected six arbitrary times from the stored chaotic trajectory,
+\[
+t \;=\; \{1,\;501,\;1001,\;1501,\;2001,\;2501\},
+\]
+and for each one extracted the state vector
+\(\mathbf{v}_{\rm guess}=V(:,t)\) as an initial guess for
+\texttt{search4EQ}.  Table~\ref{tab:EQ_from_random_snapshot} reports
+each snapshot time and whether the solver converged.  Whenever the
+flag was successful, we converted both the guess and the converged
+equilibrium back to physical space and plotted them together (dashed =
+initial guess, solid = equilibrium) in Plot C.  Finally, the
+equilibrium’s energy \(E\) and (balanced) production/dissipation
+\(P=D\) were computed with \texttt{projection} and listed in the same
+table.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{report/Figures/plotC_part2.png}
+  \caption[Initial‐guess vs.\ equilibrium (Plot C)]{Plot C :
+    Comparison of initial guesses (dashed) and their converged equilibria
+    (solid) in physical space for six arbitrary trajectory snapshots.
+    Each panel is labeled by the snapshot time \(t\) and solver success flag.}
+  \label{fig:PlotC}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Equilibria converged from arbitrary snapshots of a chaotic trajectory used as initial guesses.}
+    \begin{tabular}{ | c | c | c | c |}
+        \hline
+        $t$ & search result & $E$ & $P=D$\\
+        \hline
+        1 & Did not converge &  4.6455  & $2.9909 \not= 3.113$  \\
+       501  & Converged &  31.172   &  40.32  \\
+       1001  & Converged &  33.33  &  41.245  \\
+        1501 & Converged & 33.33  &  41.245 \\
+       2001  & Converged &  33.33  &  41.245 \\
+        2501 & Converged & 31.172   &  40.32  \\
+        \hline
+    \end{tabular} 
+    \label{tab:EQ_from_random_snapshot}
+\end{table}
+
+\item We then formed six artificial guesses
+\(\,u_k(x)=\sin(k\,2\pi x/L)\) for \(k=1,\dots,6\), ran the same solver,
+and recorded which ones converged.  For each successful \(k\), we computed
+\((E,P=D)\) and plotted the guess (dashed) alongside the equilibrium
+(solid) in Plot D.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{report/Figures/plotD_part2.png}
+  \caption[Sinusoidal‐guess equilibria (Plot D)]{Plot D :
+    Initial sine‐wave guesses \(u_k(x)=\sin(k\,2\pi x/L)\) (dashed)
+    and their converged equilibria (solid), for \(k=1,\dots,6\).
+    Each panel shows the wave‐number \(k\) and convergence flag.}
+  \label{fig:PlotD}
+\end{figure}
+
+
+\begin{table}[H]
+\centering
+\caption{Equilibria converged from $u(x)=\sin(k(2\pi x/L))$ used as initial guesses.}
+    \begin{tabular}{ | c | c | c | c | c |}
+        \hline
+        $k$ & search result & $E$ & $P=D$ & reported in table \ref{tab:EQ_from_random_snapshot}? \\
+        \hline
+        1 & Did not converge &  4.6455 & $2.9909 \not= 3.113$ & Yes \\
+        2 & Converged &13.338 &   10.893   & No  \\
+        3 & Converged &  19.246   & 37.165   & No \\
+        4 & Converged &   33.33 &   41.245   & Yes \\
+        5 & Converged & 61.152 &   92.403  & No \\
+        6 & Converged &    19.246 &    37.165  & No \\
+        \hline
+    \end{tabular} 
+\end{table}
+
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{report/Figures/plotE_part2.png}
+  \caption[Plot E : Attractor and equilibria in $(E,P,D)$ (Plot E)]{%
+    Plot E : Projection of the full chaotic trajectory into the $(E,P,D)$ space,
+    shown as blue dots, with the computed equilibria overlaid:
+    red circles for equilibria from trajectory snapshots and
+    black squares for those from sinusoidal guesses.}
+  \label{fig:PlotE}
+\end{figure}
+
+
+\noindent\underline{\textbf{Discussion---The relevance of the computed equilibria}}:
+\begin{itemize}
+  \item Both equilibria found from trajectory snapshots (red circles) and those from sinusoidal guesses (black squares) lie well inside the volume occupied by the chaotic attractor (except two that are a bit far away, not all the equilibria are stable and also the flow does not pass through every one of them).
+  \item The red‐circle equilibrium at \((E\approx31.2,\,P=D\approx40.3)\) sits at the densest part of the attractor, indicating the trajectory frequently passes near this fixed point’s neighborhood.
+  \item The second equilibrium at \((E\approx33.3,\,P=D\approx41.3)\) lies on a less populated “arm” of the attractor, but the trajectory still approaches it a lot.
+\end{itemize}
+
+These observations show that the unstable equilibria we computed act as organizing centers of the chaos: the flow repeatedly passes trough them before being ejected along unstable directions, thus they are very relevant.
+
+
+\subsubsection{Periodic orbits}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{report/Figures/plotF_part2.jpg}
+  \caption{
+    Plot F : Recurrence indicator heatmap 
+    $\ln r(t,T)=\ln\bigl(\|v(t+T)-v(t)\|/\|v(t)\|\bigr)$ 
+    as a function of time \(t\) (horizontal axis) and lag \(T\) (vertical axis). 
+    Dark blue/purple “valleys” correspond to near–recurrences (small \(r\)), 
+    i.e.\ times when the trajectory almost returns to itself after a delay \(T\). 
+    These minima mark good initial guesses \((t,T)\) for locating unstable periodic orbits.
+  }
+  \label{fig:recurrence_map}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Unstable periodic orbits.}
+    \begin{tabular}{ | c | c | c | c | c | c | c |}
+        \hline
+        $t$ & $T_\mathrm{guess}$ & search result & $T_\mathrm{UPO}$ & $\max\{|\lambda_i|\}$ & stability & $t^\ast_F$\\
+        \hline
+          450     &     59     &     fail      & 59.429 & - & - & -\\
+          1050     &     39     &     success     &  52.702  & 10.789 & Unstable & 22.157 \\
+          1230      &    78      &    fail     & 78.066  & -  & - & -\\
+          1720      &    31    &      success   &    25.568  & 6.4476 &Unstable & 13.719\\
+          1820      &    58     &     success   &    52.702  & 10.789 & Unstable & 22.157\\
+        \hline
+    \end{tabular} 
+\end{table}
+
+To determine the stability of each converged UPO $(v_p,T)$, we approximate the leading Floquet multiplier~$\lambda_1$ the spectral radius of the Jacobian $D\Phi^T(v_p)$ of the time $T$ map via a simple finite‐difference power‐method:
+
+\begin{enumerate}
+  \item Integrate the flow from~$v_p$ for one period~$T$ to obtain the reference endpoint $\Phi^T(v_p)$.
+  \item Start with a random unit vector $w^{(0)}\in\mathbb{R}^N$.  For $k=0,1,\dots,K-1$:
+    \[
+      u^{(k)} \;=\;\frac{\Phi^T\bigl(v_p+\varepsilon\,w^{(k)}\bigr)\;-\;\Phi^T(v_p)}{\varepsilon}\,,
+      \qquad
+      \lambda^{(k)} \;=\;\|u^{(k)}\|,\quad
+      w^{(k+1)}=\frac{u^{(k)}}{\|u^{(k)}\|}\,,
+    \]
+    where $\varepsilon\ll1$ is a small perturbation amplitude.
+  \item After $K$ iterations the Rayleigh quotient $\lambda^{(K-1)}$ converges to the modulus of the dominant Floquet multiplier,
+    \[
+      \lambda_1 \approx \lambda^{(K-1)}.
+    \]
+\end{enumerate}
+
+We used $\varepsilon=10^{-6}$ and $K=20$ power‐method iterations.  The resulting leading multiplier~$\lambda_1$ is reported in Table 9.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{report/Figures/plotG_part2.png}
+  \caption{
+    Projection of the KSE attractor (gray dots) onto \((E,P,D)\), 
+    with the three computed unstable periodic orbits overlaid (colored loops).
+  }
+  \label{fig:upo_overlay}
+\end{figure}
+
+\noindent\underline{\textbf{Discussion 1---The relevance of the computed UPOs}}:
+
+In the 3D $(E,P,D)$ projection (Plot~G) each converged UPO lies squarely within the folds of the chaotic attractor rather than off in an unvisited region.  In particular, UPO\,\#2 goes through the high-density lobes of the trajectory cloud.  This tells us that these orbits are "skeletons" of the chaos.  
+
+\medskip
+
+\noindent\underline{\textbf{Discussion 2---Comparing different time scales for error amplification}}:
+We find 
+\[
+t^*_F \;=\;\frac{T}{\ln|\lambda_1|}\approx
+\begin{cases}
+22.2, & T\approx52.7,\\
+13.7, & T\approx25.6,
+\end{cases}
+\]
+whereas the global Lyapunov time scale from Sec.~4.1 was $t^*_L\approx19.5$.  Thus errors near these UPOs grow slower than the average divergence rate of the full flow ($t^*_F>t^*_L$).  This ordering is expected: although UPOs carry a dominant multiplier $|\lambda_1|>1$, their finite period $T$ yields a longer effective divergence time than the instantaneous exponential separation captured by $t^*_L$.  
+
+\medskip
+
+
+\noindent\underline{\textbf{Discussion 3---The fundamental period and multiple cycles}}:
+If a converged orbit of period $mT$ were simply an $m$-fold repetition of a fundamental UPO of period $T$, then the Jacobian over $mT$ would have eigenvalues $\lambda_i^m$, so
+\[
+t^*_F = \frac{mT}{\ln|\lambda_1^m|}
+      = \frac{mT}{m\ln|\lambda_1|}
+      = \frac{T}{\ln|\lambda_1|},
+\]
+i.e.\ $t^*_F$ is invariant under cycle-multiplicity while $|\lambda_1|$ is raised to the $m$th power.  In our results, UPO\,\#1 and UPO\,\#3 have the same (almost) $(E,P,D)$, $T$ and $\lambda_1$, indicating they are the same fundamental orbit detected twice.  
+
+\medskip
+
+
+
+\noindent\underline{\textbf{Discussion 4---The relevance of UPOs and equilibria}}:
+The equilibria (Sec.~4.1) lie at the center of the attractor, UPOs pass through its high density regions and are repeatedly visited by chaotic trajectories.  
+Also, unstable periodic orbits have at least one transverse direction in phase space where infinitesimal deviations are exponentially amplified over each cycle (i.e. a Floquet multiplier > 1), so nearby trajectories are pushed away rather than drawn back. So they are by definition unstable.
+Consequently, UPOs capture the recurrent patterns of the KSE much more than isolated fixed points.  We therefore conclude that UPOs are at least as relevant than equilibria for representing the key features and statistics of the chaotic dynamics.
+
+
+
+
+
+\clearpage
+\appendix
+\section*{Appendix}
+\section{Cumulative Integral of the Autocorrelation}
+
+Figure~\ref{fig:cumulative_integral} shows the running integral
+\(\int_{0}^{l}C_k(s)\,\mathrm{d}s\) for each dataset \(k=1,2,3\).  Each curve
+rises to a maximum near the corresponding correlation length \(L_{C,k}\)
+(dashed horizontal lines) and then falls off as \(C_k(l)\) becomes negative
+due to finite-sample noise.  This behaviour explains why the naive truncated
+integral
+\(\int_{0}^{5\,\mathrm{m}}C_k(l)\,\mathrm{d}l\)
+underestimates the true integral scale.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{cumulative_integral.png}
+  \caption{Running integral of the normalized autocorrelation functions:
+    \(\displaystyle L_{\mathrm{cum},k}(l)=\int_{0}^{l}C_k(s)\,\mathrm{d}s\).
+    The horizontal dashed lines mark the correlation lengths \(L_{C,k}\).}
+  \label{fig:cumulative_integral}
+\end{figure}
+\subsection*{List of Sources}
+I used AI to code many of my plots (Chatgpt); for example to put labels on, to put colors, styles etc. I also used AI to generate some loops for my code. \\
+I used all the formulas and methods in the videos from 2021 of the course ME-467.
+    
+
+\subsection*{List of Collaborators}
+Kamil Chaoui El Faiz \\
+Raphael Jean-Léon Javary
+
+%========================  Personal Statement (DO NOT MODIFY) =====================
+\subsection*{Personal Statement}
+I hereby certify that I fully respect the stated Honor Code and specifically that:
+\begin{enumerate}
+\item My report is my original work prepared solely by me;
+\item All sources used are cited;
+\item All people I collaborated with are listed.
+\end{enumerate}
+		
+\vspace{4em}
+\begin{tabular}{ll}
+\makebox[2.5in]{\hrulefill} & \makebox[2in]{\hrulefill}\\
+\small{Signature (\MyName)} & \small{Date}
+\end{tabular}
+%==================================================================================
+
+\end{document}
